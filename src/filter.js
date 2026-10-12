@@ -17,21 +17,21 @@
  */
 export function filterShows(shows, options) {
   if (!shows) return [];
-  if (!options) return shows;
-
-  const genre = options.genre;
-  const minRating = options.minRating != null ? Number(options.minRating) : null;
-  const searchQuery = options.query ? String(options.query).toLowerCase().trim() : null;
+  
+  const query = String(options?.query ?? '').trim().toLowerCase();
+  const genre = options?.genre?.trim() || null;
+  const minRating = options?.minRating == null || Number(options.minRating) === 0
+      ? null : Number(options.minRating);
 
   return shows.filter((show) => {
-    const matchesGenre = genre == null || show.genres?.includes(genre);
+    const matchesQuery = !query || show.name?.toLowerCase().includes(query);
+
+    const matchesGenre = !genre || show.genres?.includes(genre);
 
     const ratingValue = typeof show.rating === 'object' ? show.rating?.average : show.rating;
-    const numericRating = ratingValue != null ? Number(ratingValue) : 0;
-    const matchesRating = minRating == null || numericRating >= minRating;
 
-    const matchesQuery = !searchQuery || show.name?.toLowerCase().includes(searchQuery);
+    const matchesRating = minRating === null || (ratingValue != null && Number(ratingValue) >= minRating);
 
-    return matchesGenre && matchesRating && matchesQuery;
+    return matchesQuery && matchesGenre && matchesRating;
   });
 }

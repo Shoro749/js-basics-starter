@@ -32,9 +32,9 @@ export function normalizeShow(raw) {
     id: raw.id,
     name: raw.name,
     year: raw.premiered ? new Date(raw.premiered).getFullYear() : null,
-    rating: raw.rating ? raw.rating.average : null,
-    runtime: raw.runtime,
-    network: raw.network ? raw.network.name : null,
-    genres: raw.genres ?? [],
+    rating: raw.rating == null ? null : raw.rating.average ?? null,
+    runtime: raw.runtime ?? null,
+    network: raw.network?.name ?? null,
+    genres: [...raw.genres ?? []],
   };
 }
